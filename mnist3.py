@@ -89,3 +89,21 @@ def checkargs():
     print("ILOAD    =",ILOAD)
 
     return
+
+# Initialize
+def init(ISEED, INETWORK, IEPOCH, RATIO, INDIR):
+    ### Disable pycache for safety ###
+    sys.dont_write_bytecode = True
+    os.environ['PYTHONDONTWRITEBYTECODE']  = '1'
+
+    ### Thread ###
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+
+    ### Set Seed of Pseudo Random Number ###
+    np.random.seed(ISEED)
+    tf.random.set_seed(ISEED)
+
+    ### Define Dataset (images and labels) of Training, Inference ###
+    (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+
+    ### User Defined Test Data (28px X 28px)###
