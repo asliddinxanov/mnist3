@@ -107,3 +107,33 @@ def init(ISEED, INETWORK, IEPOCH, RATIO, INDIR):
     (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 
     ### User Defined Test Data (28px X 28px)###
+
+# For exception handling for variable type mismatch
+    if INDIR != None:
+        print("[INFO] Using user images for test.")
+        i = 0
+        # Check PNG files
+        FILES = glob.glob(INDIR + "/*")
+        nf    = len(FILES)
+        # Create Numpy Array
+        ntmp  = nf*28*28
+        tmp_images  = np.empty(ntmp, np.int)
+        test_images = np.reshape(tmp_images, (nf,28,28))
+        test_images[:,:,:] = 0.0
+        test_labels = np.empty(nf, np.int)
+        test_labels[:]     = 0
+        for file in FILES:
+            # Image
+            image_org = load_img(file, color_mode="grayscale")
+            # Resize Image
+            image     = image_org.resize(size=(28,28), resample=Image.BICUBIC)
+            # Convert to negative
+            imagen    = ImageOps.invert(image)
+            # Convert Image to Numpy Array
+            npimg     = np.array(img_to_array(imagen))
+            test_images[i,:,:] = npimg[:,:,0]
+            # Label
+            tmp = os.path.splitext(os.path.basename(file))[0]
+            # Only use the 1st character
+            test_labels[i] = tmp[0]
+            i += 1
