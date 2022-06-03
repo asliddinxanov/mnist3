@@ -137,3 +137,38 @@ def init(ISEED, INETWORK, IEPOCH, RATIO, INDIR):
             # Only use the 1st character
             test_labels[i] = tmp[0]
             i += 1
+
+        ### Resize and Normalizations (0-255 -> 0-1) of images ###
+    train_images = train_images.reshape((len(train_images), 784)).astype('float32') / 255
+    test_images = test_images.reshape((len(test_images), 784)).astype('float32') / 255
+
+    ### Convert Labels to One Hot Encoding ###
+    train_labels = tf.keras.utils.to_categorical(train_labels, 10)
+    test_labels = tf.keras.utils.to_categorical(test_labels, 10)
+
+    return train_images, train_labels, test_images, test_labels
+
+
+# Define model of neural network architecture
+def conv_model(id):
+    if (int(id) == 0):
+        # Single Dense Layer
+        model = Sequential()
+        model.add(Dense(10, activation='softmax', input_shape=(28 * 28,), name='softmax'))
+    elif (int(id) == 1):
+        # CNN
+        model = Sequential()
+        model.add(Reshape((28, 28, 1), input_shape=(28 * 28,), name='reshape'))
+        model.add(Conv2D(32, (3, 3), padding='same', use_bias=True, activation='relu', name='conv_filter1'))
+        model.add(Conv2D(64, (3, 3), padding='same', use_bias=True, activation='relu', name='conv_filter2'))
+        model.add(Dropout(rate=0.25, name='dropout1'))
+        model.add(Flatten(name='flatten'))
+        model.add(Dense(128, activation='relu', name='hiden'))
+        model.add(Dropout(rate=0.5, name='dropout2'))
+        model.add(Dense(10, activation='softmax', name='softmax'))
+    else:
+        # User Defined Neural Network (Please write or modify python code in def udf_model(model)
+        model = udf_model()
+
+    model.summary()
+    return model
