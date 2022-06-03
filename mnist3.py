@@ -2,6 +2,36 @@
 
 '''MNIST Sample Ver.3'''
 
+### User Settings ###
+
+# NEURAL NETWORK (0:Single Dense Layer / 1:CNN / 2:User Defined)
+INETWORK = 0
+
+# Number of epochs (Training)
+IEPOCH   = 10
+
+# Ratio of validation/(training+validation)
+RATIO    = 0.1
+
+# Seed of pseudo random number
+ISEED    = 1
+
+# Graphic Display (0:File Output / 1:Display Window & File Output)
+IGRAPHIC = 1
+
+# Result Directory
+OUTDIR   = '/content/drive/MyDrive/RESULTS'
+
+# Input Directory of User Test Data (None: Use MNIST / other: Use images in INDIR)
+INDIR   = None
+# INDIR   = '/content/drive/MyDrive/UPLOAD'
+
+
+# Use Pre-Trained Data If Exists (0: No / 1:Yes)
+ILOAD   = 0
+
+#####################
+
 ### Library Declaration ###
 import numpy  as np
 from   pandas import DataFrame
@@ -31,9 +61,24 @@ def udf_model():
     model = Sequential()
     model.add(Reshape((28, 28, 1), input_shape=(28*28,), name='reshape'))
 
-    ### Please modify python code FROM HERE (Please start from column 4) ###
+    ### Please modify python code FROM HERE ###
+    model.add(Conv2D(16, (3, 3), padding='same', use_bias=True, activation='relu', name='conv_filter1'))
+    model.add(MaxPool2D(padding='same'))
 
+    model.add(Conv2D(32, (3, 3), padding='same', use_bias=True, activation='relu', name='conv_filter2'))
+    model.add(MaxPool2D(padding='same'))
 
+    model.add(Conv2D(64, (3, 3), padding='same', use_bias=True, activation='relu', name='conv_filter3'))
+    model.add(MaxPool2D(padding='same'))
+
+    model.add(Conv2D(256, (3, 3), padding='same', use_bias=True, activation='relu', name='conv_filter4'))
+    model.add(MaxPool2D(padding='same'))
+
+    model.add(Dropout(rate=0.2, name='dropout1'))
+    model.add(Dropout(rate=0.5, name='dropout2'))
+
+    model.add(Flatten(name='flatten'))
+    model.add(Dense(256, activation='relu', name='relu'))
 
     ### Please modify python code TO HERE  ###
     model.add(Flatten(name='flatten_final'))
