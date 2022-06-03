@@ -281,3 +281,9 @@ def fit(model, dataset, IEPOCH, RATIO, IGRAPHIC, ILOAD):
 
     return model
 
+def prediction(model, dataset):
+    train_images = dataset[0]
+    train_labels = dataset[1]
+    test_images  = dataset[2]
+    test_labels  = dataset[3]
+
