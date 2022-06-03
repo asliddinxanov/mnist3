@@ -224,3 +224,60 @@ def compile_model(model):
 
     return model
 
+
+# Training
+def fit(model, dataset, IEPOCH, RATIO, IGRAPHIC, ILOAD):
+    train_images = dataset[0]
+    train_labels = dataset[1]
+    test_images = dataset[2]
+    test_labels = dataset[3]
+
+    # Weights/bias of neural network
+    fweight = f"{OUTDIR}/weight_S{ISEED}_N{INETWORK}_E{IEPOCH}_R{RATIO}.hdf5"
+
+    t1 = time.time()
+    if not os.path.isfile(fweight) or int(ILOAD) == 0:
+        # Training and save weights/bias
+        stack = model.fit(train_images, train_labels, batch_size=128, epochs=IEPOCH, validation_split=RATIO)
+        model.save_weights(fweight)
+    else:
+        # Use pre-trained weights/bias
+        print("[INFO] Loadin pre-trained weights/bias.")
+        model.load_weights(fweight)
+    t2 = time.time()
+    print("Training Time [s]=", t2 - t1)
+
+    if int(ILOAD) == 0:
+        fig = plt.figure()
+        x = range(IEPOCH)
+        plt.plot(x, stack.history['acc'], label="acc")
+        plt.plot(x, stack.history['val_acc'], label="val_acc")
+        plt.title("Accuracy")
+        plt.legend()
+        plt.xlabel("Epoch")
+        plt.ylabel("Accuracy")
+        if (int(IGRAPHIC) == 1):
+            plt.show()
+        fig.savefig(f"{OUTDIR}/accuracy_S{ISEED}_N{INETWORK}_E{IEPOCH}_R{RATIO}.png")
+
+        fig = plt.figure()
+        plt.plot(x, stack.history['loss'], label="loss")
+        plt.plot(x, stack.history['val_loss'], label="val_loss")
+        plt.title("Loss")
+        plt.legend()
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        if (int(IGRAPHIC) == 1):
+            plt.show()
+        fig.savefig(f"{OUTDIR}/loss_S{ISEED}_N{INETWORK}_E{IEPOCH}_R{RATIO}.png")
+
+        with open(f'{OUTDIR}/summary_S{ISEED}_N{INETWORK}_E{IEPOCH}_R{RATIO}.csv', 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(['Epoch', 'Accucary', 'Loss', 'Validation_Accuracy', 'Validation_Loss'])
+            for i in range(0, IEPOCH):
+                writer.writerow([i, stack.history['acc'][i], stack.history['loss'][i], \
+                                 stack.history['val_acc'][i], stack.history['val_loss'][i]])
+            writer.writerow(['Training Time', t2 - t1, '[s]', None])
+
+    return model
+
