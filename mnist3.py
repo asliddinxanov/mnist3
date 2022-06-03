@@ -172,3 +172,10 @@ def conv_model(id):
 
     model.summary()
     return model
+# Compile
+def compile_model(model):
+    ### Definition of Optimizor and Loss Function ###
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+
+    return model
+
