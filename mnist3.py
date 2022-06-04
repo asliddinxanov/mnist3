@@ -287,3 +287,24 @@ def prediction(model, dataset):
     test_images  = dataset[2]
     test_labels  = dataset[3]
 
+    ### Inference (Predition) ###
+    t2 = time.time()
+    p_val = model.predict(np.array(test_images))
+    t3 = time.time()
+    print("Predict  Time [s]=", t3 - t2)
+
+    ### Check Results ###
+    df = DataFrame({'pred': list(map(np.argmax, p_val)), 'label': list(map(np.argmax, test_labels))})
+    correct = df[df['pred'] == df['label']]
+    incorrect = df[df['pred'] != df['label']]
+
+    ac_predict = len(correct) / len(correct + incorrect)
+    print("Prediction Accuracy =", ac_predict)
+
+    with open(f'{OUTDIR}/summary_S{ISEED}_N{INETWORK}_E{IEPOCH}_R{RATIO}.csv', 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Prediction Time', t3 - t2, '[s]', None])
+        writer.writerow(['Prediction Accuracy', ac_predict, None, None])
+
+    return p_val, df, correct, incorrect
+
