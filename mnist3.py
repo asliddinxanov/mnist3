@@ -308,3 +308,32 @@ def prediction(model, dataset):
 
     return p_val, df, correct, incorrect
 
+
+def view(dataset, result, ISEED, INETWORK, IEPOCH, RATIO, IGRAPHIC):
+    train_images = dataset[0]
+    train_labels = dataset[1]
+    test_images = dataset[2]
+    test_labels = dataset[3]
+    p_val = result[0]
+    df = result[1]
+    correct = result[2]
+    incorrect = result[3]
+
+    ### View Results ###
+    fig = plt.figure(figsize=(8, 6))
+    for i in range(10):
+        indices = list(correct[correct['pred'] == i].index[:3]) \
+                  + list(incorrect[incorrect['pred'] == i].index[:3])
+        for c, image in enumerate(test_images[indices]):
+            subplot = fig.add_subplot(6, 10, i * 6 + c + 1)
+            subplot.set_xticks([])
+            subplot.set_yticks([])
+            subplot.set_title('%d / %d' % (i, df['label'][indices[c]]))
+            subplot.imshow(image.reshape((28, 28)), vmin=0, vmax=1, cmap=plt.cm.gray_r)
+
+    if (int(IGRAPHIC) == 1):
+        plt.show()
+    fig.savefig(f"{OUTDIR}/result_S{ISEED}_N{INETWORK}_E{IEPOCH}_R{RATIO}.png")
+
+    return
+
