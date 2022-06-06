@@ -337,3 +337,27 @@ def view(dataset, result, ISEED, INETWORK, IEPOCH, RATIO, IGRAPHIC):
 
     return
 
+### Main Program ###
+# CUI mode option (Please comment out for Google Colaboratory)
+###checkargs()
+
+# Output Directory
+os.makedirs(f"{OUTDIR}", exist_ok=True)
+
+# Initialzation
+dataset = init(ISEED, INETWORK, IEPOCH, RATIO, INDIR)
+
+# Define Neural Network Architecture
+model   = conv_model(INETWORK)
+
+# Setting for training
+model   = compile_model(model)
+
+# Training
+model   = fit(model, dataset, IEPOCH, RATIO, IGRAPHIC, ILOAD)
+
+# Inference
+result  = prediction(model, dataset)
+
+# Visualize results
+view(dataset, result, ISEED, INETWORK, IEPOCH, RATIO, IGRAPHIC)
