@@ -26,7 +26,6 @@ OUTDIR   = '/content/drive/MyDrive/RESULTS'
 INDIR   = None
 # INDIR   = '/content/drive/MyDrive/UPLOAD'
 
-
 # Use Pre-Trained Data If Exists (0: No / 1:Yes)
 ILOAD   = 0
 
@@ -193,7 +192,6 @@ def init(ISEED, INETWORK, IEPOCH, RATIO, INDIR):
 
     return train_images, train_labels, test_images, test_labels
 
-
 # Define model of neural network architecture
 def conv_model(id):
     if (int(id) == 0):
@@ -223,7 +221,6 @@ def compile_model(model):
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
 
     return model
-
 
 # Training
 def fit(model, dataset, IEPOCH, RATIO, IGRAPHIC, ILOAD):
